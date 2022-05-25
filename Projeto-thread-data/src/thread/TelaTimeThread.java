@@ -5,6 +5,10 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -26,9 +30,28 @@ public class TelaTimeThread  extends JDialog{
 	private JLabel descricaoHora2 = new JLabel("Hora Thread 2");
 	private JTextField mostraHora2 = new JTextField();
 	
-	
+	//butoes 
 	private JButton jButton1 = new JButton("Start");
 	private JButton jButton2 = new JButton("Stop");
+	
+	//primeira thread
+	private Runnable thread1 = new Runnable() {
+		
+		@Override
+		public void run() {
+			while (true) {
+				mostraHora1.setText(new SimpleDateFormat("dd/MM/yyyy hh:mm.ss").
+						format(Calendar.getInstance().getTime()));
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+	};
+	private Thread threadHora1;
 
 	
 	public TelaTimeThread() {//executa oque estiver dentro, no momento da abertura ou execuçao 
@@ -80,6 +103,24 @@ public class TelaTimeThread  extends JDialog{
 		jButton2.setPreferredSize(new Dimension(92, 25));
 		gridBagConstraints.gridx ++;
 		jPanel.add(jButton2, gridBagConstraints);
+		
+		
+		//acao do butao start
+		jButton1.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {//executa o click no butao
+				threadHora1 = new Thread(thread1);
+				threadHora1.start();
+			}
+		});
+		
+		// acao do butao stop
+		jButton2.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {// executa o click no butao
+				threadHora1.stop();
+			}
+		});
 		
 		add(jPanel, BorderLayout.WEST);
 		//sempre será o ultimo comando
