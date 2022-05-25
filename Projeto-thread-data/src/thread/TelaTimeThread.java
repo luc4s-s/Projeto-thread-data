@@ -40,8 +40,10 @@ public class TelaTimeThread  extends JDialog{
 		@Override
 		public void run() {
 			while (true) {
+				//poderia colocar duas thread dessa q funcionaria normal
 				mostraHora1.setText(new SimpleDateFormat("dd/MM/yyyy hh:mm.ss").
 						format(Calendar.getInstance().getTime()));
+				
 				try {
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
@@ -51,7 +53,29 @@ public class TelaTimeThread  extends JDialog{
 			}
 		}
 	};
-	private Thread threadHora1;
+	
+	// segunda thread
+	private Runnable thread2 = new Runnable() {
+
+		@Override
+		public void run() {
+			while (true) {
+				// poderia colocar duas thread dessa q funcionaria normal
+				mostraHora2.setText(new SimpleDateFormat("dd-MM-yyyy hh:mm:ss").
+						format(Calendar.getInstance().getTime()));
+
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+	};
+	
+	private Thread threadHora1;//objeto thread 1
+	private Thread threadHora2;//objeto thread 2
 
 	
 	public TelaTimeThread() {//executa oque estiver dentro, no momento da abertura ou execuçao 
@@ -109,8 +133,17 @@ public class TelaTimeThread  extends JDialog{
 		jButton1.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {//executa o click no butao
+				
 				threadHora1 = new Thread(thread1);
-				threadHora1.start();
+				threadHora1.start();//executando o start
+				
+				threadHora2 = new Thread(thread2);
+				threadHora2.start();//executando o start
+				
+				//desabilitando o botao de start e abilitando o stop
+				jButton1.setEnabled(false);
+				jButton2.setEnabled(true);
+				
 			}
 		});
 		
@@ -118,9 +151,18 @@ public class TelaTimeThread  extends JDialog{
 		jButton2.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {// executa o click no butao
-				threadHora1.stop();
+				threadHora1.stop();//stop da thread
+				threadHora2.stop();
+				
+				//desabilitando o botao de stop e abilitando o start
+				jButton1.setEnabled(true);
+				jButton2.setEnabled(false);
 			}
 		});
+		
+		
+		//deixando o botao stop disabilitado ao iniciar a tela
+		jButton2.setEnabled(false);
 		
 		add(jPanel, BorderLayout.WEST);
 		//sempre será o ultimo comando
